@@ -16,7 +16,7 @@ export class CreateHandler implements CommandHandler {
 
   dispatch(command: CreateCommand): void {
     console.log("todo handler")
-    const todoId = new TodoId("1");
+    const todoId = new TodoId(Math.floor(Math.random() * 10).toString());
     const todoBody = new TodoBody(command.todoBody);
     const todo = Todo.create(todoId, todoBody);
     console.log("create todo handler")

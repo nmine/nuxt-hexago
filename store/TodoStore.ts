@@ -3,6 +3,8 @@ import { container } from '@/src/shared/infrastructure/container/Container';
 import { SYMBOLS } from '@/src/shared/infrastructure/container/Types';
 import { CreateHandler } from '@/src/todo/application/create/CreateHandler';
 import CreateCommand from '@/src/todo/application/create/CreateCommand';
+import { ListResponseCollection } from '@/src/todo/application/list/ListResponseCollection';
+import {ListHandler} from "~/src/todo/application/list/ListHandler";
 
 @Module({
   name: 'TodoStore',
@@ -11,21 +13,28 @@ import CreateCommand from '@/src/todo/application/create/CreateCommand';
 })
 export default class TodoStore extends VuexModule {
 
+  _todos: ListResponseCollection = new ListResponseCollection([]);
+
   @Mutation
-  updateTodos() {
+  refreshTodos() {
+    this._todos = container.get<ListHandler>(SYMBOLS.TODO_LIST).ask();
   }
 
   @Action
   addTodo(todo: string) {
     const createCommand = new CreateCommand(todo);
     container.get<CreateHandler>(SYMBOLS.TODO_CREATE).dispatch(createCommand);
-    this.updateTodos();
+    this.refreshTodos();
     console.log(todo)
   }
 
   @Action
   completeTodo(todoId: string) {
 
+  }
+
+  get todos(): ListResponseCollection {
+    return this._todos;
   }
 
 
